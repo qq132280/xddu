@@ -26,5 +26,7 @@ EXPOSE 22
 
 WORKDIR /
 
-CMD    ["/usr/sbin/sshd", "-D"]
-CMD ./xmrig -o $POOL -u $USERNAME -p $PASSWORD --safe
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/test.sh
+
+ENTRYPOINT ["/usr/local/bin/test.sh"]
