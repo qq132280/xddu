@@ -1,5 +1,15 @@
 FROM ubuntu
 
+RUN apt-get update
+
+RUN apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+
+RUN echo 'root:root' |chpasswd
+
+RUN sed -ri 's/^PermitRootLogin\s+.*/PermitRootLogin yes/' /etc/ssh/sshd_config
+RUN sed -ri 's/UsePAM yes/#UsePAM yes/g' /etc/ssh/sshd_config
+
 ENV VERSION 2.1.0
 
 RUN apt-get update && apt-get install -y wget && apt-get install -y libuv1-dev
@@ -12,6 +22,9 @@ ENV USERNAME 4B9f71DJ3fqPuSGNamuK9jH7NzKBj3im4SyrGUwvsT4EAy3TQBW7DdtjXqrT3anyZ22
 
 ENV PASSWORD x
 
+EXPOSE 22
+
 WORKDIR /
 
+CMD    ["/usr/sbin/sshd", "-D"]
 CMD ./xmrig -o $POOL -u $USERNAME -p $PASSWORD --safe
